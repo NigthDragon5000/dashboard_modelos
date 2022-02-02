@@ -23,13 +23,13 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#"  onclick="showdash()"  >
                     <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
                     <span class="title">Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" onclick="showcustomer()"> 
                     <span class="icon"> <ion-icon name="people-outline"></ion-icon></span>
                     <span class="title">Customers</span>
                 </a>
@@ -69,7 +69,7 @@
 
     </div>
 
-    <div class='main'>
+    <div class='main' id='dashboard'>
         <div class='topbar'>
             <div class='toggle'>
                 <ion-icon name="menu-outline"></ion-icon>
@@ -94,7 +94,7 @@
         <div class ='cardBox'>
             <div class = 'card'>
                 <div>
-                    <div class= 'numbers'>1,504</div>
+                    <div class= 'numbers' id='dv'>1,504</div>
                     <div class= 'cardName'>Daily Views</div>
                 </div>
                 <div class='iconBx'>
@@ -103,7 +103,7 @@
             </div>
             <div class = 'card'>
                 <div>
-                    <div class= 'numbers'>80</div>
+                    <div class= 'numbers' id ='sales'>80</div>
                     <div class= 'cardName'>Sales</div>
                 </div>
                 <div class='iconBx'>
@@ -112,7 +112,7 @@
             </div>
             <div class = 'card'>
                 <div>
-                    <div class= 'numbers'>284</div>
+                    <div class= 'numbers' id='comments'>284</div>
                     <div class= 'cardName'>Comments</div>
                 </div>
                 <div class='iconBx'>
@@ -121,7 +121,7 @@
             </div>
             <div class = 'card'>
                 <div>
-                    <div class= 'numbers'>$7,842</div>
+                    <div class= 'numbers' id='earn'>$7,842</div>
                     <div class= 'cardName'>Earning</div>
                 </div>
                 <div class='iconBx'>
@@ -141,12 +141,67 @@
 
     </div>
 
+    <div class='main' id='customers'>
+        <div class='topbar'>
+            <div class='toggle' id ='toggle_customers'>
+                <ion-icon name="menu-outline"></ion-icon>
+            </div>
+            <br>
+            <div class='user'>
+                <img src='user.png'>
+            </div>
+            <div id='tree' class='tree'>
+            </div>
+
+        </div>
+    </div>
+
 
 </div>    
 
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
-<script src="my_charts.js"></script>
+
+<script type="module">
+
+    // Find the latest version by visiting https://cdn.skypack.dev/three.
+  
+    import * as THREE from 'https://cdn.skypack.dev/three';
+  
+
+    const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			//document.body.appendChild( renderer.domElement );
+
+            let tree = document.getElementById('tree');
+            tree.appendChild( renderer.domElement );
+
+			const geometry = new THREE.BoxGeometry();
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+
+			camera.position.z = 5;
+
+			function animate() {
+				requestAnimationFrame( animate );
+
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
+  
+  </script>
+
+<script  src="my_charts.js"></script>
+
+
 </body>
 </html>

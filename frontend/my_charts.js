@@ -1,4 +1,7 @@
 
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('customers').style.display = 'none';
+
 /* ----------------------------Page------------------------------------*/
 
     // Menu Toggle
@@ -6,11 +9,22 @@
     let navigation = document.querySelector('.navigation');
     let main = document.querySelector('.main');
 
+    // Para main customers
+    let toggle2 = document.getElementById('toggle_customers');
+    let main2 = document.getElementById('customers');
+        
+
     toggle.onclick  = function() {
         navigation.classList.toggle('active');
         main.classList.toggle('active');
+        main2.classList.toggle('active');
     }
 
+    toggle2.onclick  = function() {
+    navigation.classList.toggle('active');
+    main.classList.toggle('active');
+    main2.classList.toggle('active');
+    }
 
 
     //Navigation
@@ -131,71 +145,12 @@ async function renderGraph2(url) {
 /*                             Proceso Principal                                      */
 
 generarListaModelos()
-/*
-var modelo=document.getElementById("models").value
-modelo = api_url+modelo
-modelo = modelo.toLowerCase()
-*/
 
-//grafico1 =  renderGraph1(modelo);
-//grafico2 =  renderGraph2(modelo);
-
-/*
-document.getElementById("models").onchange = function()
-{
-    var modelo = this.value;
-    modelo = api_url+modelo
-    modelo = modelo.toLowerCase()
-
-     
-    grafico1.then(function(result1) {
-        result1.destroy()// "Some User token"
-    })
-
-    grafico2.then(function(result2) {
-        result2.destroy()// "Some User token"
-    })
-
-    console.log(modelo);
-    grafico1=renderGraph1(modelo);
-    grafico2=renderGraph2(modelo);
-};
-*/
-
-/*
-
-apis= api_url+'hello'
-var headers = {}
-fetch(apis, {
-    method : "GET",
-    mode: 'cors',
-    headers: headers,
-    data:"hola"
-})
-.then((response) => {
-    if (!response.ok) {
-        throw new Error(response.error)
-    }
-    return response.json();
-})
-.then(data => {
-    document.getElementById('messages').value = data.messages;
-})
-.catch(function(error) {
-    document.getElementById('messages').value = error;
-});
-
-
-*/
 
 function sendDataToBackendAjax(dato,ruta,event) {
 
-    // create own form in memory
-    //const formData = new FormData();
-
-    // set values in this form
-    //formData.append("I want to send this to backend");
     formData = [dato]
+
 
     fetch(api_url+"ajax", {
         method: "POST",
@@ -217,25 +172,24 @@ function sendDataToBackendAjax(dato,ruta,event) {
     .catch((error) => {
         console.error('Error:', error);
     });
-    //event.preventDefault(); // don't send in normal way and don't reload page
-}
-
-/*
- function mm(){
-    //const data = await getapi(api_url+'dif');
-    //console.log(data);    
-    grafico1 =  renderGraph1(api_url+'dif');
-    grafico2 = renderGraph2(api_url+'dif');
-    return [grafico1,grafico2];
-}
-*/
-
+};
 var dato=document.getElementById("models").value
 sendDataToBackendAjax(dato,'ajax')
 grafico1 =  renderGraph1(api_url+'dif');
 grafico2 = renderGraph2(api_url+'dif');
 
-console.log(grafico1)
+
+
+async function actualizarCards(url) {
+    
+    const data = await getapi(url);
+    document.getElementById('dv').innerHTML= data['dailyViews'];
+    document.getElementById('sales').innerHTML= data['sales'];
+    document.getElementById('comments').innerHTML= data['comments'];
+    document.getElementById('earn').innerHTML= data['earning'];
+}
+
+actualizarCards(api_url+'dif');
 
 document.getElementById("models").onchange = function()
 {
@@ -251,5 +205,20 @@ document.getElementById("models").onchange = function()
     
     grafico1 =  renderGraph1(api_url+'dif');
     grafico2 = renderGraph2(api_url+'dif');
+    actualizarCards(api_url+'dif');
 };
 
+
+// Funcion de cambio de Pagina
+showdash_= true;
+console.log(showdash_)
+
+function showdash(){
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('customers').style.display = 'none';
+};
+
+function showcustomer(){
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('customers').style.display = 'block';
+};
