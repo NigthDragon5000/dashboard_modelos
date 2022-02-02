@@ -23,13 +23,37 @@
     list.forEach((item) =>
     item.addEventListener('mouseover',activateLink));
 
+    // Lista de modelos
+    function generarListaModelos() {
+ 
+        var values = ["Peque3", "Peque2", "Micro", "Consumo","Admi20M"];
+     
+        var select = document.createElement("select");
+        select.name = "models";
+        select.id = "models"
+     
+        for (const val of values)
+        {
+            var option = document.createElement("option");
+            option.value = val;
+            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+            select.appendChild(option);
+        }
+     
+        var label = document.createElement("label");
+        label.innerHTML = "Selecciona el modelo: "
+        label.htmlFor = "models";
+     
+        document.getElementById("listamodelos").appendChild(label).appendChild(select);
+    }
+
 
 /* ----------------------------Graph------------------------------------*/
 
 
 // api url
-const ctx = document.getElementById('myChart').getContext('2d');
-const earning = document.getElementById('earning').getContext('2d');
+var ctx = document.getElementById('myChart').getContext('2d');
+var earning = document.getElementById('earning').getContext('2d');
 const api_url =   "http://192.168.1.131:5000/";
   
 // Defining async function
@@ -42,8 +66,10 @@ async function getapi(url) {
     //console.log(data);
 }
 
+
 // Calling that async function
-async function renderGraph1(url) {
+ async function renderGraph1(url) {
+    
     const data = await getapi(url);
     const myChart = new Chart(ctx, {
         type: 'polarArea',
@@ -63,9 +89,12 @@ async function renderGraph1(url) {
            responsive: true,
         }
     });
+    return myChart;
 }
 
 async function renderGraph2(url) {
+
+ 
     const data = await getapi(url);
     const myChart2 = new Chart(earning, {
         type: 'bar',
@@ -96,11 +125,131 @@ async function renderGraph2(url) {
             responsive: true,
         }
         });
-  
+        return myChart2;
 }
 
-renderGraph1(api_url);
-renderGraph2(api_url);
+/*                             Proceso Principal                                      */
+
+generarListaModelos()
+/*
+var modelo=document.getElementById("models").value
+modelo = api_url+modelo
+modelo = modelo.toLowerCase()
+*/
+
+//grafico1 =  renderGraph1(modelo);
+//grafico2 =  renderGraph2(modelo);
+
+/*
+document.getElementById("models").onchange = function()
+{
+    var modelo = this.value;
+    modelo = api_url+modelo
+    modelo = modelo.toLowerCase()
+
+     
+    grafico1.then(function(result1) {
+        result1.destroy()// "Some User token"
+    })
+
+    grafico2.then(function(result2) {
+        result2.destroy()// "Some User token"
+    })
+
+    console.log(modelo);
+    grafico1=renderGraph1(modelo);
+    grafico2=renderGraph2(modelo);
+};
+*/
+
+/*
+
+apis= api_url+'hello'
+var headers = {}
+fetch(apis, {
+    method : "GET",
+    mode: 'cors',
+    headers: headers,
+    data:"hola"
+})
+.then((response) => {
+    if (!response.ok) {
+        throw new Error(response.error)
+    }
+    return response.json();
+})
+.then(data => {
+    document.getElementById('messages').value = data.messages;
+})
+.catch(function(error) {
+    document.getElementById('messages').value = error;
+});
 
 
+*/
+
+function sendDataToBackendAjax(dato,ruta,event) {
+
+    // create own form in memory
+    //const formData = new FormData();
+
+    // set values in this form
+    //formData.append("I want to send this to backend");
+    formData = [dato]
+
+    fetch(api_url+"ajax", {
+        method: "POST",
+        async: false,
+        body: formData,
+        mode: 'cors',
+        //headers: {'Content-Type': 'application/json'},
+        //body: JSON.stringify(formData)
+    })
+    .then(function(response){
+        data = response.json();  // get result from server as JSON
+        //alert(data);
+        return data; 
+    })
+    
+    .then(function(data){ 
+        console.log(data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    //event.preventDefault(); // don't send in normal way and don't reload page
+}
+
+/*
+ function mm(){
+    //const data = await getapi(api_url+'dif');
+    //console.log(data);    
+    grafico1 =  renderGraph1(api_url+'dif');
+    grafico2 = renderGraph2(api_url+'dif');
+    return [grafico1,grafico2];
+}
+*/
+
+var dato=document.getElementById("models").value
+sendDataToBackendAjax(dato,'ajax')
+grafico1 =  renderGraph1(api_url+'dif');
+grafico2 = renderGraph2(api_url+'dif');
+
+console.log(grafico1)
+
+document.getElementById("models").onchange = function()
+{
+    var dato = this.value;
+    sendDataToBackendAjax(dato,'ajax');
+    grafico1.then(function(result1) {
+        result1.destroy()// "Some User token"
+    })
+
+    grafico2.then(function(result2) {
+        result2.destroy()// "Some User token"
+    })
+    
+    grafico1 =  renderGraph1(api_url+'dif');
+    grafico2 = renderGraph2(api_url+'dif');
+};
 

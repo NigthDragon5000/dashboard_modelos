@@ -204,6 +204,21 @@ transition: 0.5s;
     width: 100%;
 }
 
+.listamodelos {
+    position: relative;
+    width: 400px;
+    margin: 0 10px;
+    font-size: 18px;
+}
+
+.listamodelos select  {
+    font-size: 18px;
+}
+
+.listamodelos select option {
+    font-size: 18px;
+}
+
 
 .search label input {
     width: 100%;
