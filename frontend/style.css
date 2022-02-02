@@ -328,8 +328,7 @@ transition: 0.5s;
 .tree{
     position:absolute;
     width: 100%;
-    padding: 20px;
-    margin-top: 900px;
+    margin-top:750px;
     overflow :hidden;
     /*
     display: grid;
@@ -337,4 +336,17 @@ transition: 0.5s;
     grid-gap: 30px;
     min-height: 200px;
     */
+}
+
+#info {
+	position: absolute;
+	top:200px;
+    left: 40px;
+	width: 100%;
+	text-align: center;
+	z-index: 100;
+	display:block;
+    color: white;
+    font-size:25px;
+    font-weight: bold;
 }
