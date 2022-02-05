@@ -1,6 +1,16 @@
 
     document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('customers').style.display = 'none';
+    document.getElementById('upload').style.display = 'none';
+    document.getElementById('logout').style.display = 'none';
+
+    document.getElementById('showdashlabel').style.fontWeight ='bold';
+    document.getElementById('showuploadlabel').style.fontWeight ='normal';
+    document.getElementById('showlogout').style.fontWeight ='normal';
+
+    document.getElementById('showdashlabel').style.fontSize = '1.2em';
+    document.getElementById('showuploadlabel').style.fontSize ='initial';
+    document.getElementById('showlogout').style.fontSize ='initial';
+
 
 /* ----------------------------Page------------------------------------*/
 
@@ -9,21 +19,34 @@
     let navigation = document.querySelector('.navigation');
     let main = document.querySelector('.main');
 
-    // Para main customers
-    let toggle2 = document.getElementById('toggle_customers');
-    let main2 = document.getElementById('customers');
+    // Para upload
+    let toggle2 = document.getElementById('toggle_upload');
+    let main2 = document.getElementById('upload');
+
+    // Para logout
+    let toggle3 = document.getElementById('toggle_logout');
+    let main3 = document.getElementById('logout');
         
 
     toggle.onclick  = function() {
         navigation.classList.toggle('active');
         main.classList.toggle('active');
         main2.classList.toggle('active');
+        main3.classList.toggle('active');
     }
 
     toggle2.onclick  = function() {
-    navigation.classList.toggle('active');
-    main.classList.toggle('active');
-    main2.classList.toggle('active');
+        navigation.classList.toggle('active');
+        main.classList.toggle('active');
+        main2.classList.toggle('active');
+        main3.classList.toggle('active');
+    }
+
+    toggle3.onclick  = function() {
+        navigation.classList.toggle('active');
+        main.classList.toggle('active');
+        main2.classList.toggle('active');
+        main3.classList.toggle('active');
     }
 
 
@@ -66,8 +89,10 @@
 
 
 // api url
-var ctx = document.getElementById('myChart').getContext('2d');
-var earning = document.getElementById('earning').getContext('2d');
+var importancia = document.getElementById('importancia').getContext('2d');
+var iv = document.getElementById('iv').getContext('2d');
+var ks_line = document.getElementById('ks_graph').getContext('2d');
+var corr_bar = document.getElementById('corr_bar').getContext('2d');
 const api_url =   "http://192.168.1.131:5000/";
   
 // Defining async function
@@ -85,13 +110,13 @@ async function getapi(url) {
  async function renderGraph1(url) {
     
     const data = await getapi(url);
-    const myChart = new Chart(ctx, {
+    const myChart = new Chart(importancia, {
         type: 'polarArea',
         data: {
-            labels: ['Facebook','YouTube','Amazon'],
+            labels: data['variables_importantes'],
             datasets: [{
-                label: 'Traffic Source',
-                data:  data['traffic'] ,
+                label: 'Importancia Variables',
+                data:  data['importancia'] ,
                 backgroundColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
@@ -101,6 +126,12 @@ async function getapi(url) {
         },
         options: {
            responsive: true,
+           plugins: {
+            title: {
+                display: true,
+                text: 'Variables mas importantes'
+            }
+        }
         }
     });
     return myChart;
@@ -108,22 +139,26 @@ async function getapi(url) {
 
 async function renderGraph2(url) {
 
- 
     const data = await getapi(url);
-    const myChart2 = new Chart(earning, {
+    const myChart2 = new Chart(iv, {
         type: 'bar',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June','July','August','September',
-        'October','November','December'],
+            labels: data['ivs_variables'],
             datasets: [{
-                label: 'Earning',
-                data: data['earnings'],
+                label: 'IV',
+                data: data['ivs'],
                 backgroundColor: [
+                    'RGBA( 173, 216, 230, 1 )',
+                     /*
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
+                    */
+                   /*
                     'rgba(153, 102, 255, 1)',
+                    */
+                    /*
                     'rgba(255, 159, 64, 1)',
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
@@ -131,6 +166,8 @@ async function renderGraph2(url) {
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)'
+                    */
+                    
                 ],
                 borderWidth: 1
             }]
@@ -141,6 +178,77 @@ async function renderGraph2(url) {
         });
         return myChart2;
 }
+
+
+
+async function renderGraphLine(url) {
+
+    const data = await getapi(url);
+    const myChart3 = new Chart(ks_line, {
+        type: 'line',
+        data: {
+            labels: data['labels_ks_historical'],
+            datasets: [{
+                label: 'KS',
+                data: data['ks_historical'],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1,
+                pointRadius: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true,
+                    }
+                }]
+            },
+        },
+        });
+        return myChart3;
+}
+
+
+
+async function renderGraphHBar(url) {
+
+    const data = await getapi(url);
+    console.log(data['corr_variables'])
+    const myChart4 = new Chart(corr_bar, {
+        type: 'bar',
+        data: {
+            labels: data['corr_variables'],
+            datasets: [{
+                label: 'Corr',
+                data: data['corr_values'],
+                backgroundColor: [
+                   // 'rgba(54, 162, 235, 1)'
+                    'RGBA( 173, 216, 230, 1 )'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                  position: 'right',
+                },
+                title: {
+                  display: true,
+                  text: 'Correlaciones'
+                }
+              }
+
+         },
+        });
+        return myChart4;
+}
+
 
 /*                             Proceso Principal                                      */
 
@@ -173,20 +281,22 @@ function sendDataToBackendAjax(dato,ruta,event) {
         console.error('Error:', error);
     });
 };
+
+
 var dato=document.getElementById("models").value
 sendDataToBackendAjax(dato,'ajax')
 grafico1 =  renderGraph1(api_url+'dif');
 grafico2 = renderGraph2(api_url+'dif');
-
-
+grafico3 = renderGraphLine(api_url+'dif');
+grafico4 = renderGraphHBar(api_url+'dif');
 
 async function actualizarCards(url) {
     
     const data = await getapi(url);
-    document.getElementById('dv').innerHTML= data['dailyViews'];
-    document.getElementById('sales').innerHTML= data['sales'];
-    document.getElementById('comments').innerHTML= data['comments'];
-    document.getElementById('earn').innerHTML= data['earning'];
+    document.getElementById('ks').innerHTML= data['ks'];
+    document.getElementById('gini').innerHTML= data['gini'];
+    document.getElementById('variables').innerHTML= data['variables'];
+    document.getElementById('tiering').innerHTML= data['tiering'];
 }
 
 actualizarCards(api_url+'dif');
@@ -210,15 +320,51 @@ document.getElementById("models").onchange = function()
 
 
 // Funcion de cambio de Pagina
-showdash_= true;
-console.log(showdash_)
+
 
 function showdash(){
     document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('customers').style.display = 'none';
+    document.getElementById('upload').style.display = 'none';
+    document.getElementById('logout').style.display = 'none';
+
+    document.getElementById('showdashlabel').style.fontWeight ='bold';
+    document.getElementById('showuploadlabel').style.fontWeight ='normal';
+    document.getElementById('showlogout').style.fontWeight ='normal';
+
+    document.getElementById('showdashlabel').style.fontSize = '1.2em';
+    document.getElementById('showuploadlabel').style.fontSize ='initial';
+    document.getElementById('showlogout').style.fontSize ='initial';
+ 
 };
 
-function showcustomer(){
+function showupload(){
     document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('customers').style.display = 'block';
+    document.getElementById('upload').style.display = 'block';
+    document.getElementById('logout').style.display = 'none';
+
+    document.getElementById('showdashlabel').style.fontWeight ='normal';
+    document.getElementById('showuploadlabel').style.fontWeight ='bold';
+    document.getElementById('showlogout').style.fontWeight ='normal';
+
+    document.getElementById('showdashlabel').style.fontSize = 'initial';
+    document.getElementById('showuploadlabel').style.fontSize ='1.2em';
+    document.getElementById('showlogout').style.fontSize ='initial';
+
+
 };
+
+function showlogout(){
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('upload').style.display = 'none';
+    document.getElementById('logout').style.display = 'block';
+
+
+    document.getElementById('showdashlabel').style.fontWeight ='normal';
+    document.getElementById('showuploadlabel').style.fontWeight ='normal';
+    document.getElementById('showlogout').style.fontWeight ='bold';
+
+    document.getElementById('showdashlabel').style.fontSize = 'initial';
+    document.getElementById('showuploadlabel').style.fontSize ='initial';
+    document.getElementById('showlogout').style.fontSize ='1.2em';
+};
+
