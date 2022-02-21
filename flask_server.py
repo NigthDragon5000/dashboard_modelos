@@ -1,6 +1,9 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify,redirect
 from flask_cors import CORS,cross_origin
 from flask import request
+from werkzeug.utils import secure_filename
+from io import BytesIO
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -9,6 +12,19 @@ CORS(app)
 class DataStore():
     modelo = None
 dat = DataStore()
+
+@app.route('/uploader', methods = ['GET', 'POST'])
+def upload_file():
+   if request.method == 'POST':
+      f = request.files['file']
+      try:
+        df= pd.read_csv(BytesIO(f.read()),sep=";")
+        print(df.head())
+        #f.save(secure_filename(f.filename))
+        #print(type(f))
+        return "Exitoso"
+      except:
+        return "Error"
 
 @app.route('/ajax', methods=['GET', 'POST'])
 def ajax():

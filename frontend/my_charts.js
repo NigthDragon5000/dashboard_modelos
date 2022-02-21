@@ -93,7 +93,7 @@ var importancia = document.getElementById('importancia').getContext('2d');
 var iv = document.getElementById('iv').getContext('2d');
 var ks_line = document.getElementById('ks_graph').getContext('2d');
 var corr_bar = document.getElementById('corr_bar').getContext('2d');
-const api_url =   "http://192.168.1.131:5000/";
+const api_url =   "http://192.168.1.37:5000/";
   
 // Defining async function
 async function getapi(url) {
@@ -317,6 +317,12 @@ document.getElementById("models").onchange = function()
     grafico2 = renderGraph2(api_url+'dif');
     actualizarCards(api_url+'dif');
 };
+
+
+function seeFile(){
+    var file=document.getElementById("myFile").files[0].value;
+    console.log(file);
+}
 
 
 // Funcion de cambio de Pagina
